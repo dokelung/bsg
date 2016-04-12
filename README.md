@@ -1,2 +1,2 @@
 # bsg
-test bsg
+beautiful soup gui
