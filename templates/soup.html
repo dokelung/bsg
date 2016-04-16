@@ -1,14 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h2>Query</h2>
+    <h2>Soup</h2>
     {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-    <form action="{{ url_for('query') }}" method=get>
+    <form action="{{ url_for('soup') }}" method=get>
         <dl>
-            <dt>URL
+            <dt>URL:
             <dd><input type=text name=url>
-            <dt>String:
-            <dd><input type=password name=query_string>
-            <dd><input type=submit value=Query>
+            <dt>Soup:
+            <dd><input type=text name=soupstr>
+            <dd><input type=submit value=Soup!>
         </dl>
     </form>
     {{ html }}

@@ -6,7 +6,6 @@ from flask import Flask, request, session, g, redirect, url_for, abort, render_t
 from pygments import highlight, token
 from pygments.lexers import HtmlLexer
 from pygments.formatters import HtmlFormatter
-from pygments.filters import KeywordCaseFilter, NameHighlightFilter
 
 import pkg.clexer as clexer
 import pkg.cformatter as cformatter
@@ -42,35 +41,43 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-@app.route('/query', methods=['GET'])
-def query():
+@app.route('/index', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+@app.route('/soup', methods=['GET'])
+def soup():
     error = None
     if request.method == 'GET':
         if not request.args.get('url'):
             error = 'No URL'
-        elif not request.args.get('query_string'):
+        elif not request.args.get('soupstr'):
             error = 'No query string'
         else:
-            # url = request.args.get('url')
-            # query_string = request.args.get('query_string')
-            # flash('query!!')
-            # html = rst.urlopen(url).read()
-            with open('test.html') as reader:
-                html = reader.read()
-            soup = BeautifulSoup(html, 'html.parser')
+            url = request.args.get('url')
+            soupstr = request.args.get('soupstr')
 
-            tags = soup.find_all('title')
+            flash('soup({soupstr}) in {url}'.format(soupstr=soupstr, url=url))
+            html = rst.urlopen(url).read()
+
+            # test code
+            # with open('test/test.html') as reader:
+            #     html = reader.read()
+
+            soup = BeautifulSoup(html, 'html.parser')
+            tags = soup(soupstr)
+
             for t in tags:
                 t.wrap(soup.new_tag('bsg-ht'))
             # Garfield: apply pipeline to find other types like content, class, id, url ...
 
             html_lexer = clexer.BSGHtmlLexer()
-            highlight_html = highlight(soup.prettify(), html_lexer, cformatter.BSGHtmlFormatter())
+            html_formatter = cformatter.BSGHtmlFormatter(linenos=True)
+            highlight_html = highlight(soup.prettify(), html_lexer, html_formatter)
 
-            return render_template('query.html', html=Markup(highlight_html))
+            return render_template('soup.html', html=Markup(highlight_html))
 
-    return render_template('query.html', error=error)
+    return render_template('soup.html', error=error)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
-    # app.run()
