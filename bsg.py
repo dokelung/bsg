@@ -3,12 +3,8 @@ import urllib.request as rst
 from bs4 import BeautifulSoup
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, Markup
-from pygments import highlight, token
-from pygments.lexers import HtmlLexer
-from pygments.formatters import HtmlFormatter
 
-import pkg.clexer as clexer
-import pkg.cformatter as cformatter
+from pkg.soup import BSG
 
 # configuration
 DATABASE = '/tmp/flaskr.db'
@@ -41,43 +37,68 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
-@app.route('/index', methods=['GET'])
-def index():
-    return render_template('index.html')
+@app.route('/home', methods=['GET'])
+def home():
+    context = {}
+    context['active_page'] = 'home'
+
+    flash('Welcome to Beautiful Soup GUI')
+
+    with open('test/test.html') as reader:
+        html = reader.read()
+
+    bsg = BSG(html)
+    highlight_html = bsg.get_ht_html('"p"')
+    context['html'] = Markup(highlight_html)
+
+    return render_template('home.html', **context)
 
 @app.route('/soup', methods=['GET'])
 def soup():
-    error = None
+    context = {}
+    context['active_page'] = 'soup'
+    context['errors'] = []
+
     if request.method == 'GET':
-        if not request.args.get('url'):
-            error = 'No URL'
-        elif not request.args.get('soupstr'):
-            error = 'No query string'
-        else:
-            url = request.args.get('url')
-            soupstr = request.args.get('soupstr')
+        context['url'] = request.args.get('url', '')
+        context['soupstr'] = request.args.get('soupstr', '')
+        context['remember_info'] = request.args.get('remember_info', '')
 
-            flash('soup({soupstr}) in {url}'.format(soupstr=soupstr, url=url))
-            html = rst.urlopen(url).read()
+        if not context['url']:
+            context['errors'].append('No URL')
+        if not context['soupstr']:
+            context['errors'].append('No query string')
 
-            # test code
-            # with open('test/test.html') as reader:
-            #     html = reader.read()
+        if not context['errors']:
+            if request.args.get('add_http') and 'http://' not in context['url']:
+                context['url'] = 'http://'+context['url']
 
-            soup = BeautifulSoup(html, 'html.parser')
-            tags = soup(soupstr)
+            flash('soup({soupstr}) in {url}'.format(soupstr=context['soupstr'], url=context['url']))
+            html = rst.urlopen(context['url']).read()
 
-            for t in tags:
-                t.wrap(soup.new_tag('bsg-ht'))
-            # Garfield: apply pipeline to find other types like content, class, id, url ...
+            bsg = BSG(html)
+            highlight_html = bsg.get_ht_html(context['soupstr'])
+            context['html'] = Markup(highlight_html)
 
-            html_lexer = clexer.BSGHtmlLexer()
-            html_formatter = cformatter.BSGHtmlFormatter(linenos=True)
-            highlight_html = highlight(soup.prettify(), html_lexer, html_formatter)
+            return render_template('soup.html', **context)
 
-            return render_template('soup.html', html=Markup(highlight_html))
+    context['errors'] = '; '.join(context['errors'])
 
-    return render_template('soup.html', error=error)
+    return render_template('soup.html', **context)
+
+@app.route('/css_select', methods=['GET'])
+def css_select():
+    context = {}
+    context['active_page'] = 'css_select'
+
+    return render_template('home.html', **context)
+
+@app.route('/help', methods=['GET'])
+def get_help():
+    context = {}
+    context['active_page'] = 'help'
+
+    return render_template('home.html', **context)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
