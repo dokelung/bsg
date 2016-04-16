@@ -57,7 +57,7 @@ class BSGHtmlFormatter(html.HtmlFormatter):
                         (url, self.lineanchors, linenumber, parts[0])
                     parts[-1] = parts[-1] + "</a>"
 
-            print("ttype, value, cspan, parts:", ttype, value, cspan, parts)
+            # print("ttype, value, cspan, parts:", ttype, value, cspan, parts)
             # for all but the last line
             for part in parts[:-1]:
                 if line:
