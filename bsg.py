@@ -58,31 +58,34 @@ def soup():
     context = {}
     context['active_page'] = 'soup'
     context['errors'] = []
+    context['url'] = request.args.get('url', '')
+    context['protocol'] = request.args.get('protocol', '')
+    context['soupstr'] = request.args.get('soupstr', '')
+    context['remember_info'] = request.args.get('remember_info', '')
 
-    if request.method == 'GET':
-        context['url'] = request.args.get('url', '')
-        context['soupstr'] = request.args.get('soupstr', '')
-        context['remember_info'] = request.args.get('remember_info', '')
+    # first time
+    if not request.args.get('submitted', ''):
+        flash('Use soup(find_all) to search in HTML')
+        context['submitted'] = True
 
+    # not the first time, check error
+    if request.args.get('submitted', ''):
+        if not context['protocol']:
+            context['errors'].append('No protocol')
         if not context['url']:
             context['errors'].append('No URL')
         if not context['soupstr']:
-            context['errors'].append('No query string')
+            context['errors'].append('No query content')
 
-        if not context['errors']:
-            if request.args.get('add_http') and 'http://' not in context['url']:
-                context['url'] = 'http://'+context['url']
-
-            flash('soup({soupstr}) in {url}'.format(soupstr=context['soupstr'], url=context['url']))
-            html = rst.urlopen(context['url']).read()
-
-            bsg = BSG(html)
-            highlight_html = bsg.get_ht_html(context['soupstr'])
-            context['html'] = Markup(highlight_html)
-
-            return render_template('soup.html', **context)
-
-    context['errors'] = '; '.join(context['errors'])
+    total_url = context['protocol'] + '://' + context['url']
+    # not the first time and no errors
+    if not context['errors'] and request.args.get('submitted', ''):
+        flash('soup({soupstr}) in {url}'.format(soupstr=context['soupstr'], url=total_url))
+        html = rst.urlopen(total_url).read()
+        bsg = BSG(html)
+        highlight_html = bsg.get_ht_html(context['soupstr'])
+        context['html'] = Markup(highlight_html)
+        return render_template('soup.html', **context)
 
     return render_template('soup.html', **context)
 
