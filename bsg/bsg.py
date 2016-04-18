@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, Markup
 
-from .pkg.soup import BSG
+from pkg.soup import BSG
 
 # configuration
 DATABASE = '/tmp/flaskr.db'
