@@ -5,14 +5,14 @@ import re
 
 from bs4 import BeautifulSoup
 
-from pygments import highlight, token
-from pygments.lexers import HtmlLexer
-from pygments.formatters import HtmlFormatter
+from pygments import highlight
 
 import pkg.clexer as clexer
 import pkg.cformatter as cformatter
 
-class BSG:
+
+class BSG(object):
+
     def __init__(self, html):
         self.soup = BeautifulSoup(html, 'html.parser')
 
