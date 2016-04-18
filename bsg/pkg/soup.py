@@ -7,8 +7,7 @@ from bs4 import BeautifulSoup
 
 from pygments import highlight
 
-import pkg.clexer as clexer
-import pkg.cformatter as cformatter
+from . import clexer, cformatter
 
 
 class BSG(object):
