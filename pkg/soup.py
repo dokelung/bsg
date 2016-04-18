@@ -21,13 +21,16 @@ class BSG:
             tags = eval('self.soup('+soupstr+')')
         except:
             tags = []
-    
+
         for t in tags:
             t.wrap(self.soup.new_tag('bsg-ht'))
         # Garfield: apply pipeline to find other types like content, class, id, url ...
-    
+
         html_lexer = clexer.BSGHtmlLexer()
         html_formatter = cformatter.BSGHtmlFormatter()
         highlight_html = highlight(self.soup.prettify(), html_lexer, html_formatter)
+
+        highlight_html = re.sub("<bsg-ht>\s*\n", "<bsg-ht>", highlight_html)
+        highlight_html = re.sub(">[\s\n]*</bsg-ht>", "></bsg-ht>", highlight_html)
 
         return highlight_html
