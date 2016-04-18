@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block body %}
+    <h2> Soup </h2>
+    <form class="pure-form" action="{{ url_for('soup') }}" method=get>
+        <fieldset>
+            <input class="pure-input-1-7" type="text" name="protocol" value="{% if remember_info %}{{protocol}}{% endif %}" placeholder="http">://
+            <input class="pure-input-1-3" type="text" name="url" value="{% if remember_info %}{{url}}{% endif %}" placeholder="www.google.com">
+
+            <br><br>
+            soup( &nbsp; <input class="pure-input-1-3" type="text" name="soupstr" value="{% if remember_info %}{{soupstr}}{% endif %}" placeholder="'a', class_='gb4'"> &nbsp; )
+
+            <label for="remember_info">
+                <input id="remember_info" name="remember_info" type="checkbox" checked> remember info
+            </label>
+
+            <br><br>
+
+            <input type="hidden" name="submitted" value="yes">
+
+            <button type="submit" class="pure-button pure-button-primary">Soup</button>
+        </fieldset>
+
+    {% if html %}
+        <h2> Results </h2>
+        {{ html }}
+    {% endif %}
+{% endblock %}

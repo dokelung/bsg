@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Beautiful Soup GUI</title>
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='highlight.css') }}">
+</head>
+
+<body>
+
+    <div class="page">
+
+    <h1 class="bsg-title"> Beautiful Soup GUI </h1>
+
+    <!-- menu nav -->
+    <hr>
+    <div class="bsg-nav pure-menu pure-menu-open pure-menu-horizontal">
+        <ul>
+            <li {% if active_page is sameas "home" %} class="pure-menu-selected" {% endif %} ><a href="{{ url_for('home') }}">Home</a></li>
+            <li {% if active_page is sameas "soup" %} class="pure-menu-selected" {% endif %} ><a href="{{ url_for('soup') }}">Soup</a></li>
+            <li {% if active_page is sameas "css_select" %} class="pure-menu-selected" {% endif %} ><a href="{{ url_for('css_select') }}">CSS Select</a></li>
+            <li {% if active_page is sameas "help" %} class="pure-menu-selected" {% endif %} ><a href="{{ url_for('get_help') }}">Help</a></li>
+        </ul>
+    </div>
+    <hr>
+
+    {% for message in get_flashed_messages() %}
+        <br>
+        <div class=flash>{{ message }}</div>
+        <br>
+    {% endfor %}
+
+    {% for error in errors %}
+        <p class=error>{{ error }}</p>
+    {% endfor %}
+
+    {% block body %}{% endblock %}
+
+    </div>
+</body>
+</html>
