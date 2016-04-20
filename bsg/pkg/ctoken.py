@@ -5,3 +5,4 @@ from pygments import token
 
 BSG = token.Token.BSG
 BSG_HT = BSG.Highlight
+BSG_CSS_HT = BSG.Highlight

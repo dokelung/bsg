@@ -48,7 +48,7 @@ def home():
         html = reader.read()
 
     bsg = BSG(html)
-    highlight_html = bsg.get_ht_html('"p"')
+    highlight_html = bsg.highlight_by_soup_query('"p"')
     context['html'] = Markup(highlight_html)
 
     return render_template('home.html', **context)
@@ -60,7 +60,7 @@ def soup():
     context['errors'] = []
     context['url'] = request.args.get('url', '')
     context['protocol'] = request.args.get('protocol', '')
-    context['soupstr'] = request.args.get('soupstr', '')
+    context['soup_str'] = request.args.get('soup_str', '')
     context['remember_info'] = request.args.get('remember_info', '')
 
     # first time
@@ -74,16 +74,16 @@ def soup():
             context['errors'].append('No protocol')
         if not context['url']:
             context['errors'].append('No URL')
-        if not context['soupstr']:
+        if not context['soup_str']:
             context['errors'].append('No query content')
 
     total_url = context['protocol'] + '://' + context['url']
     # not the first time and no errors
     if not context['errors'] and request.args.get('submitted', ''):
-        flash('soup({soupstr}) in {url}'.format(soupstr=context['soupstr'], url=total_url))
+        flash('soup({soup_str}) in {url}'.format(soup_str=context['soup_str'], url=total_url))
         html = rst.urlopen(total_url).read()
         bsg = BSG(html)
-        highlight_html = bsg.get_ht_html(context['soupstr'])
+        highlight_html = bsg.highlight_by_soup_query(context['soup_str'])
         context['html'] = Markup(highlight_html)
         return render_template('soup.html', **context)
 
@@ -93,8 +93,37 @@ def soup():
 def css_select():
     context = {}
     context['active_page'] = 'css_select'
+    context['errors'] = []
+    context['url'] = request.args.get('url', '')
+    context['protocol'] = request.args.get('protocol', '')
+    context['css_str'] = request.args.get('css_str', '')
+    context['remember_info'] = request.args.get('remember_info', '')
 
-    return render_template('home.html', **context)
+    # first time
+    if not request.args.get('submitted', ''):
+        flash('Use soup.select to search in HTML')
+        context['submitted'] = True
+
+    # not the first time, check error
+    if request.args.get('submitted', ''):
+        if not context['protocol']:
+            context['errors'].append('No protocol')
+        if not context['url']:
+            context['errors'].append('No URL')
+        if not context['css_str']:
+            context['errors'].append('No query content')
+
+    total_url = context['protocol'] + '://' + context['url']
+    # not the first time and no errors
+    if not context['errors'] and request.args.get('submitted', ''):
+        flash('soup.select("{css_str}") in {url}'.format(css_str=context['css_str'], url=total_url))
+        html = rst.urlopen(total_url).read()
+        bsg = BSG(html)
+        highlight_html = bsg.highlight_by_css_query(context['css_str'])
+        context['html'] = Markup(highlight_html)
+        return render_template('css_select.html', **context)
+
+    return render_template('css_select.html', **context)
 
 @app.route('/help', methods=['GET'])
 def get_help():
