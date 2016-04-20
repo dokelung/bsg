@@ -13,6 +13,7 @@ class BSGHtmlLexer(lexers.HtmlLexer):
         'root': [
             # BSG custom tags.
             (r'</*bsg-ht>', ctoken.BSG_HT),
+            (r'</*bsg-css-ht>', ctoken.BSG_CSS_HT),
             # inherit
             lexer.inherit,
         ],
