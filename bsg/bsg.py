@@ -48,7 +48,7 @@ def home():
         html = reader.read()
 
     bsg = BSG(html)
-    highlight_html = bsg.get_ht_html('"p"')
+    highlight_html = bsg.highlight_by_soup_query('"p"')
     context['html'] = Markup(highlight_html)
 
     return render_template('home.html', **context)

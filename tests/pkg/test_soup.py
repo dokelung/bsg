@@ -8,11 +8,11 @@ from bsg.pkg import soup
 
 class TestSoup(unittest.TestCase):
 
-    def test_get_ht_html(self):
+    def test_highlight_by_soup_query(self):
 
         # simple
         bsg = soup.BSG("<html><body></body></html>")
-        content = bsg.get_ht_html('"body"')
+        content = bsg.highlight_by_soup_query('"body"')
         wrapped_content = (
             '<div class="highlight"><pre>'
             '<span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>\n'
