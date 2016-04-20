@@ -4,7 +4,6 @@
 import re
 
 from bs4 import BeautifulSoup
-
 from pygments import highlight
 
 from . import clexer, cformatter
@@ -18,15 +17,18 @@ class BSG(object):
     def __init__(self, html):
         self.soup = BeautifulSoup(html, 'html.parser')
 
-    def get_ht_html(self, soupstr):
+    def highlight_by_soup_query(self, soup_str):
         try:
-            tags = eval('self.soup('+soupstr+')')
+            tags = eval('self.soup('+soup_str+')')
         except:
             tags = []
 
+        if not tags:
+            return self.soup.prettify()
+
         return self._highlight(tags, self.ht_tag)
 
-    def highlight_by_css(self, css_str):
+    def highlight_by_css_query(self, css_str):
         tags = self.soup.select(css_str)
 
         if not tags:

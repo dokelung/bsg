@@ -60,7 +60,7 @@ def soup():
     context['errors'] = []
     context['url'] = request.args.get('url', '')
     context['protocol'] = request.args.get('protocol', '')
-    context['soupstr'] = request.args.get('soupstr', '')
+    context['soup_str'] = request.args.get('soup_str', '')
     context['remember_info'] = request.args.get('remember_info', '')
 
     # first time
@@ -74,16 +74,16 @@ def soup():
             context['errors'].append('No protocol')
         if not context['url']:
             context['errors'].append('No URL')
-        if not context['soupstr']:
+        if not context['soup_str']:
             context['errors'].append('No query content')
 
     total_url = context['protocol'] + '://' + context['url']
     # not the first time and no errors
     if not context['errors'] and request.args.get('submitted', ''):
-        flash('soup({soupstr}) in {url}'.format(soupstr=context['soupstr'], url=total_url))
+        flash('soup({soup_str}) in {url}'.format(soup_str=context['soup_str'], url=total_url))
         html = rst.urlopen(total_url).read()
         bsg = BSG(html)
-        highlight_html = bsg.get_ht_html(context['soupstr'])
+        highlight_html = bsg.highlight_by_soup_query(context['soup_str'])
         context['html'] = Markup(highlight_html)
         return render_template('soup.html', **context)
 
