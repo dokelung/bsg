@@ -13,6 +13,7 @@ from . import clexer, cformatter
 class BSG(object):
 
     css_ht_tag = 'bsg-css-ht'
+    ht_tag = 'bsg-ht'
 
     def __init__(self, html):
         self.soup = BeautifulSoup(html, 'html.parser')
@@ -23,17 +24,7 @@ class BSG(object):
         except:
             tags = []
 
-        for t in tags:
-            t.wrap(self.soup.new_tag('bsg-ht'))
-
-        html_lexer = clexer.BSGHtmlLexer()
-        html_formatter = cformatter.BSGHtmlFormatter()
-        highlight_html = highlight(self.soup.prettify(), html_lexer, html_formatter)
-
-        highlight_html = re.sub("<bsg-ht>\s*\n", "<bsg-ht>", highlight_html)
-        highlight_html = re.sub(">[\s\n]*</bsg-ht>", "></bsg-ht>", highlight_html)
-
-        return highlight_html
+        return self._highlight(tags, self.ht_tag)
 
     def highlight_by_css(self, css_str):
         tags = self.soup.select(css_str)
