@@ -54,6 +54,6 @@ class BSG(object):
         wrap_tag, wrap_tag_end = "<{}>".format(wrap_str), "</{}>".format(wrap_str)
         highlight_html = re.sub(
             r">[\s\n]*{}".format(wrap_tag_end), ">"+wrap_tag_end,
-            re.sub(r"{}\s*\n".format(wrap_str), wrap_tag, highlight_html)
+            re.sub(r"{}\s*\n".format(wrap_tag), wrap_tag, highlight_html)
         )
         return highlight_html
