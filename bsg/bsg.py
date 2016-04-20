@@ -116,7 +116,7 @@ def css_select():
     total_url = context['protocol'] + '://' + context['url']
     # not the first time and no errors
     if not context['errors'] and request.args.get('submitted', ''):
-        flash('soup.select({css_str}) in {url}'.format(soup_str=context['css_str'], url=total_url))
+        flash('soup.select({css_str}) in {url}'.format(css_str=context['css_str'], url=total_url))
         html = rst.urlopen(total_url).read()
         bsg = BSG(html)
         highlight_html = bsg.highlight_by_css_query(context['css_str'])
