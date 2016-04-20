@@ -23,16 +23,10 @@ class BSG(object):
         except:
             tags = []
 
-        if not tags:
-            return self.soup.prettify()
-
         return self._highlight(tags, self.ht_tag)
 
     def highlight_by_css_query(self, css_str):
         tags = self.soup.select(css_str)
-
-        if not tags:
-            return self.soup.prettify()
 
         return self._highlight(tags, self.css_ht_tag)
 
