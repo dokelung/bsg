@@ -94,7 +94,7 @@ def css_select():
     context = {}
     context['active_page'] = 'css_select'
 
-    return render_template('home.html', **context)
+    return render_template('css_select.html', **context)
 
 @app.route('/help', methods=['GET'])
 def get_help():
